@@ -1,19 +1,22 @@
-# NodeJs Coding Rules & Security BWV
+# Node.js, TypeScript Coding & Security Standards
+
+Đây là tài liệu định nghĩa các quy chuẩn về code và bảo mật cho các dự án sử dụng Node.js và TypeScript.
 
 ## Table of Contents
-- [1. Naming](#1-naming)
-- [2. Styling](#2-styling)
-- [3. Comment](#3-comment)
-- [4. Usage](#4-usage)
-- [5. Security](#5-security)
+- [1. Naming Conventions (Quy tắc đặt tên)](#1-naming-conventions-quy-tắc-đặt-tên)
+- [2. Styling & Formatting (Phong cách và định dạng)](#2-styling--formatting-phong-cách-và-định-dạng)
+- [3. Documentation & Comments (Ghi chú và tài liệu)](#3-documentation--comments-ghi-chú-và-tài-liệu)
+- [4. Best Practices (Các thông lệ tốt nhất)](#4-best-practices-các-thông-lệ-tốt-nhất)
+- [5. Security (Bảo mật)](#5-security-bảo-mật)
 
 ---
 
-## 1. Naming
+## 1. Naming Conventions (Quy tắc đặt tên)
 
 ### [TS-NAMING-001] Use camelCase for variables 
 - **Severity**: REQUIRED
-- **Description**: Variables must utilize `camelCase`.
+- **Linter Rule**: `@typescript-eslint/naming-convention`
+- **Description**: Tên biến, tham số, và thuộc tính phải sử dụng `camelCase`.
 - **Examples**:
   ```typescript
   // Bad
@@ -25,21 +28,20 @@
 
 ### [TS-NAMING-002] Use meaningful names
 - **Severity**: REQUIRED
-- **Description**: Names must be descriptive. Avoid single letters (e.g., a, b) unless in small loops
+- **Description**: Tên phải có ý nghĩa và mô tả rõ ràng. Tránh dùng tên quá ngắn (ví dụ: a, b) trừ khi trong các vòng lặp nhỏ.
 - **Examples**:
   ```typescript
     // Bad
     let a = 'John';
-    let b = 20;
 
     // Good
     let firstName = 'John';
-    let age = 20;
     ```
 
 ### [TS-NAMING-003] Avoid overly long variable names
 - **Severity**: RECOMMENDED
-- **Description**: Variable names should be concise but descriptive.
+- **Linter Rule**: `eslint:max-len`
+- **Description**: Tên biến nên ngắn gọn nhưng vẫn đủ mô tả.
 - **Examples**:
   ```typescript
   // Bad
@@ -49,28 +51,22 @@
   let firstName = 'John';
   ```
 
-### [TS-NAMING-004] No leading underscores
+### [TS-NAMING-004] No leading underscores for public properties
 - **Severity**: REQUIRED
-- **Description**: Do not start variable names with an underscore _ unless it is a specific framework requirement or private field convention (though private keyword is preferred).
+- **Linter Rule**: `@typescript-eslint/naming-convention`
+- **Description**: Không bắt đầu tên biến, thuộc tính bằng dấu gạch dưới `_`, trừ khi đó là thuộc tính `private` trong class.
 - **Examples**:
   ```typescript
   // Bad
   let _firstName = 'John';
-  ```
 
-### [TS-NAMING-005] Hungarian Notation / Data Type Prefix
-- **Severity**: OPTIONAL
-- **Description**: Can use prefixes to indicate data types if it helps clarity (e.g., str, num, is).
-- **Examples**:
-  ```typescript
-  // Acceptable
-  let strName = 'John';
-  let numValue = 10;
+  // Good (if private)
+  private _firstName = 'John';
   ```
 
 ### [TS-NAMING-006] No unclear abbreviations
 - **Severity**: REQUIRED
-- **Description**: Avoid abbreviations that are not universally understood.
+- **Description**: Tránh các từ viết tắt không được hiểu rộng rãi.
 - **Examples**:
   ```typescript
   // Bad
@@ -82,42 +78,46 @@
 
 ### [TS-NAMING-007] Constants must be UPPER_SNAKE_CASE
 - **Severity**: REQUIRED
-- **Description**: Constants (especially global/config constants) must use UPPER_CASE with underscores.
+- **Linter Rule**: `@typescript-eslint/naming-convention`
+- **Description**: Hằng số (đặc biệt là các hằng số toàn cục hoặc cấu hình) phải sử dụng `UPPER_SNAKE_CASE`.
 - **Examples**:
   ```typescript
   // Bad
-  const bucketUpload = 'folder'
+  const bucketUpload = 'folder';
 
   // Good
   const BUCKET_UPLOAD = 'folder';
   ```
 
-### [TS-NAMING-008] Boolean variables must use verb prefixes
+### [TS-NAMING-008] Boolean variables must have verb prefixes
 - **Severity**: REQUIRED
-- **Description**: Boolean variables should start with is, should, can, has, etc.
+- **Linter Rule**: `@typescript-eslint/naming-convention`
+- **Description**: Tên biến boolean nên bắt đầu bằng `is`, `should`, `can`, `has`.
 - **Examples**:
   ```typescript
+  // Good
   let isConnected = true;
-  let shouldConfirm = true;
-  let canResize = true;
+  let hasPermission = false;
   ```
 
 ### [TS-NAMING-009] Use let/const instead of var
 - **Severity**: REQUIRED
-- **Description**: Never use var. Use const by default, and let if reassignment is needed.
+- **Linter Rule**: `eslint:no-var`
+- **Description**: Không bao giờ sử dụng `var`. Dùng `const` làm mặc định, và dùng `let` nếu cần gán lại giá trị.
 - **Examples**:
   ```typescript
   // Bad
   var num = 10;
 
   // Good
-  let num = 10;
   const PI = 3.14;
+  let num = 10;
   ```
 
 ### [TS-NAMING-010] Avoid keyword collisions
-- **Severity**: 
-- **Description**: Do not use variable names that clash with language keywords (e.g., class, print, break).
+- **Severity**: REQUIRED
+- **Linter Rule**: `eslint:no-shadow-restricted-names`
+- **Description**: Không sử dụng tên biến trùng với các từ khóa của ngôn ngữ (ví dụ: `class`, `function`, `break`).
 - **Examples**:
   ```typescript
   // Bad
@@ -127,37 +127,40 @@
   let className = "Math";
   ```
 
-### [TS-NAMING-011] 
+### [TS-NAMING-011] Use PascalCase for Types
 - **Severity**: REQUIRED
-- **Description**: Class names, Interfaces, Types, and Enums must use PascalCase.
+- **Linter Rule**: `@typescript-eslint/naming-convention`
+- **Description**: Tên của `class`, `interface`, `type`, và `enum` phải sử dụng `PascalCase`.
 - **Examples**:
   ```typescript
   // Bad
   class person {}
-  enum color {}
+  type userProfile = {};
 
   // Good
   class Person {}
-  enum Color {}
+  type UserProfile = {};
   ```
 
-## 2. Styling
+## 2. Styling & Formatting (Phong cách và định dạng)
 
-### [TS-STYLE-001] Use single quotes
+### [TS-STYLE-001] Use single quotes for strings
 - **Severity**: RECOMMENDED
-- **Description**: Use single quotes ' for string literals unless interpolating or escaping.
+- **Linter Rule**: `eslint:quotes`
+- **Description**: Sử dụng dấu nháy đơn `'` cho chuỗi, trừ khi cần nội suy chuỗi (dùng `` ` ``) hoặc chuỗi chứa dấu nháy đơn.
 - **Examples**:
   ```typescript
   // Bad
-  const message = "Hello";
+  const message = "Hello World";
 
   // Good
-  const message = 'Hello';
+  const message = 'Hello World';
   ```
 
 ### [TS-STYLE-002] Explicit Type Annotations
 - **Severity**: REQUIRED
-- **Description**: Use type annotations specifically for function parameters and return types to enhance readability.
+- **Linter Rule**: `@typescript-eslint/explicit-function-return-type`
+- **Description**: Phải chỉ định kiểu dữ liệu rõ ràng cho tham số và giá trị trả về của hàm.
 - **Examples**:
   ```typescript
   // Bad
@@ -169,208 +172,121 @@
 
 ### [TS-STYLE-003] Indentation (2 Spaces)
 - **Severity**: REQUIRED
-- **Description**: Description: Use 2 spaces for indentation (configured via .editorconfig or Prettier).
+- **Linter Rule**: `eslint:indent` (Thường được quản lý bởi Prettier)
+- **Description**: Sử dụng 2 dấu cách để thụt đầu dòng.
 - **Examples**:
   ```typescript
-  // Bad
-  function multiplyNumbers(a: number, b: number): number {
-      return a * b;
-  }
-
   // Good
   function multiplyNumbers(a: number, b: number): number {
     return a * b;
   }
   ```
 
-### [TS-STYLE-004] Async/Await over Callbacks
+### [TS-STYLE-004] Async/Await over Callbacks/Promises
 - **Severity**: REQUIRED
-- **Description**: Avoid callback hell. Use async/await syntax.
+- **Linter Rule**: `eslint-plugin-promise/prefer-await-to-then`
+- **Description**: Luôn ưu tiên sử dụng cú pháp `async/await` thay vì `.then()` hoặc callbacks để xử lý các tác vụ bất đồng bộ.
 - **Examples**:
   ```typescript
   // Bad
-  fetch(url).then(res => res.json()).then(data => ...);
+  fetch(url).then(res => ...);
 
   // Good
   const res = await fetch(url);
-  const data = await res.json();
   ```
 
-### [TS-STYLE-005] Defensive Programming (Null Checks)
-- **Severity**: REQUIRED
-- **Description**: Always check for null/undefined. Use Optional Chaining (?.) where possible.
-- **Examples**:
-  ```typescript
-  // Bad
-  console.log(user.address.city);
+## 3. Documentation & Comments (Ghi chú và tài liệu)
 
-  // Good
-  console.log(user?.address?.city);
-  ```
-
-### [TS-STYLE-006] Use Interfaces for Object Shapes
+### [TS-DOC-001] JSDoc for public functions
 - **Severity**: RECOMMENDED
-- **Description**: Define object structures using interface.
-- **Examples**:
-  ```typescript
-  interface User {
-    firstName: string;
-    age: number;
-  }
-  ```
-
-## 3. Comment
-
-### [TS-DOC-001] JSDoc for Functions
-- **Severity**: REQUIRED (For public APIs/Utils)
-- **Description**: Use JSDoc /** ... */ for complex logic or exported functions.
+- **Linter Rule**: `eslint-plugin-jsdoc/require-jsdoc`
+- **Description**: Sử dụng JSDoc `/** ... */` cho các hàm phức tạp, hàm được export hoặc các hàm trong API công khai.
 - **Examples**:
   ```typescript
   /**
   * Adds two numbers together.
-  * @param {number} a - The first number to add.
-  * @param {number} b - The second number to add.
-  * @returns {number} - The sum of a and b.
+  * @param a - The first number.
+  * @param b - The second number.
+  * @returns The sum of a and b.
   */
   function add(a: number, b: number): number { ... }
   ```
-### [TS-DOC-002] Comment Screen name or API url
-- **Severity**: REQUIRED
-- **Description**: Should comment Screen name or API url before doing something.
-- **Examples**:
-  ```typescript
-  /**
-  * S306_1 締め処理
-  */
-  <script lang=ts setup>...</script>
 
-  /**
-  * api/customer
-  */
-  export const search = async (req: Request, res: Response, next: NextFunction) => {...};
-  ```
-
-## 4. Usage & Best Practices
-
-### [TS-USAGE-001] Use Lodash/Utils for safety
+### [TS-DOC-002] Comment API endpoint or Screen name
 - **Severity**: RECOMMENDED
-- **Description**: Use libraries like Lodash for safe Object/Array manipulation to avoid runtime exceptions.
+- **Description**: Nên có comment về tên màn hình hoặc URL của API trước các khối logic liên quan.
 - **Examples**:
   ```typescript
-  // Better
-  import { filter } from "lodash";
-  const expensive = filter(products, p => p.price > 100);
+  /**
+  * POST /api/customers
+  * Handles customer creation.
+  */
+  export const createCustomer = async (req: Request, res: Response) => {...};
   ```
 
-### [TS-LINT-001] No Console.log
+## 4. Best Practices (Các thông lệ tốt nhất)
+
+### [TS-LINT-001] No `console.log` in production code
 - **Severity**: WARNING
-- **Description**: Do not leave console.log in production code. Use a logger instead.
-- **Examples**:
-  ```typescript
-  // Bad
-  console.log(`Listening on ${bind}`);
-
-  // Good
-  logger.info(`Listening on ${bind}`);
-  ```
+- **Linter Rule**: `eslint:no-console`
+- **Description**: Không để lại `console.log` trong code production. Sử dụng một thư viện logger chuyên dụng (ví dụ: Winston, Pino).
 
 ### [TS-LINT-002] Enforce Semicolons
 - **Severity**: REQUIRED
-- **Description**: Statements must end with a semicolon ;.
-- **Examples**:
-  ```typescript
-  // Bad - required ';' at the end
-  const age = 20
+- **Linter Rule**: `eslint:semi`
+- **Description**: Các câu lệnh phải kết thúc bằng dấu chấm phẩy `;`.
 
-  // Good
-  const age = 20;
-  ```
-
-### [TS-LINT-003] No Debugger
+### [TS-LINT-003] No `debugger`
 - **Severity**: ERROR
-- **Description**: debugger statements are strictly forbidden in committed code.
-- **Examples**:
-  ```typescript
-  function isTruthy(x) {
-    debugger; // <-- Error line
-    return Boolean(x);
-  }
-  ```
+- **Linter Rule**: `eslint:no-debugger`
+- **Description**: Các câu lệnh `debugger` bị cấm tuyệt đối trong code được commit.
 
-### [TS-LINT-004] No Explicit Any
+### [TS-LINT-004] No Explicit `any`
 - **Severity**: WARNING
-- **Description**: Avoid any. Define types or use unknown if absolutely necessary.
-- **Examples**:
-  ```typescript
-  // Bad
-  const age: any = '17';
+- **Linter Rule**: `@typescript-eslint/no-explicit-any`
+- **Description**: Tránh sử dụng `any`. Hãy định nghĩa kiểu dữ liệu cụ thể hoặc sử dụng `unknown` nếu thực sự cần thiết.
 
-  // Good
-  const age: number = 17;
-  ```
+## 5. Security (Bảo mật)
 
-### [TS-LINT-006] Specific Imports
-- **Severity**: RECOMMENDED
-- **Description**: Import only what you need to reduce bundle size.
-- **Examples**:
-  ```typescript
-  // Bad
-  import * as _ from 'lodash';
-
-  // Good
-  import { get } from 'lodash';
-  ```
-
-## 5. Security
-
-### [SEC-DB-001] Parameterized Queries (SQL Injection)
+### [SEC-DB-001] Prevent SQL Injection
 - **Severity**: CRITICAL
-- **Description**: NEVER concatenate strings into SQL queries. Use binding parameters/ORM methods.
+- **Linter Rule**: `semgrep:javascript.express.security.audit.sequelize-raw-query.sequelize-raw-query`
+- **Description**: KHÔNG BAO GIỜ nối chuỗi trực tiếp vào câu lệnh SQL. Luôn sử dụng ORM methods hoặc parameterized queries.
 - **Examples**:
   ```typescript
   // Bad
-  const query = `SELECT * FROM users WHERE id=${userId}`;
+  const query = `SELECT * FROM users WHERE id = ${userId}`;
 
-  // Good
-  const query = "SELECT * FROM users WHERE id=?";
+  // Good (Sequelize)
+  const users = await User.findAll({ where: { id: userId } });
   ```
 
-### [SEC-API-001] Rate Limiting
-- **Severity**: RECOMMENDED
-- **Description**: Implement rate limiting on public endpoints to prevent brute-force/DDoS.
-
-### [SEC-LOG-001] Structured Logging
-- **Severity**: REQUIRED
-- **Description**: Use structured logging (e.g., Winston) instead of standard output. Log to files/streams, not just console.
-
-### [SEC-XSS-001] Escape HTML (XSS)
+### [SEC-XSS-001] Escape HTML output to prevent XSS
 - **Severity**: CRITICAL
-- **Description**: Always escape user input before rendering to HTML.
+- **Description**: Luôn escape dữ liệu do người dùng nhập vào trước khi hiển thị ra HTML để chống lại tấn công Cross-Site Scripting (XSS).
 - **Examples**:
   ```typescript
   // Use libraries like 'escape-html' or framework features
-  const safe = escapeHtml(userInput);
+  const safeHtml = escapeHtml(userInput);
   ```
 
-### [SEC-FILE-001] No User Input in File Paths
+### [SEC-FILE-001] Avoid Path Traversal
 - **Severity**: CRITICAL
-- **Description**: Do not use raw user input to determine file paths or URLs (Path Traversal). Use IDs/Maps instead.
+- **Linter Rule**: `eslint-plugin-security/detect-non-literal-fs-filename`
+- **Description**: Không sử dụng trực tiếp dữ liệu người dùng nhập vào để tạo đường dẫn file hoặc URL.
 - **Examples**:
   ```typescript
   // Bad
-  res.redirect(req.body.hiddenInputUrl);
+  const data = fs.readFileSync(req.body.filePath);
 
-  // Bad
-  const dataFileDetail = fs.readFileSync(req.body.filePath);
-
-  // Good 👍
-  const redirectUrl = getUrlFromInputId(req.body.hiddenInputUrlId);
-  res.redirect(redirectUrl);
+  // Good
+  const safePath = path.join('/base/path/', safeFilename);
+  const data = fs.readFileSync(safePath);
   ```
 
 ### [SEC-DATA-001] Encrypt Sensitive Data
 - **Severity**: CRITICAL
-- **Description**: Passwords and PII (Personally Identifiable Information) must be hashed (Bcrypt) or encrypted at rest.
+- **Description**: Mật khẩu và các thông tin định danh cá nhân (PII) phải được hash (ví dụ: Bcrypt) hoặc mã hóa khi lưu trữ.
 - **Examples**:
   ```typescript
   const hash = await bcrypt.hash(password, salt);
