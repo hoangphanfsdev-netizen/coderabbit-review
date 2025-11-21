@@ -6,7 +6,7 @@
 - [3. Comment](#3-comment)
 - [4. Usage](#4-usage)
 - [5. Security](#5-security)
-
+- [6. Clean Code Principles](#6-clean-code-principles)
 ---
 
 ## 1. Naming
@@ -28,14 +28,14 @@
 - **Description**: Names must be descriptive. Avoid single letters (e.g., a, b) unless in small loops
 - **Examples**:
   ```typescript
-    // Bad
-    let a = 'John';
-    let b = 20;
+  // Bad
+  let a = 'John';
+  let b = 20;
 
-    // Good
-    let firstName = 'John';
-    let age = 20;
-    ```
+  // Good
+  let firstName = 'John';
+  let age = 20;
+  ```
 
 ### [TS-NAMING-003] Avoid overly long variable names
 - **Severity**: RECOMMENDED
@@ -56,6 +56,9 @@
   ```typescript
   // Bad
   let _firstName = 'John';
+  
+  // Good
+  private firstName = 'John';
   ```
 
 ### [TS-NAMING-005] Hungarian Notation / Data Type Prefix
@@ -116,7 +119,7 @@
   ```
 
 ### [TS-NAMING-010] Avoid keyword collisions
-- **Severity**: 
+- **Severity**: REQUIRED
 - **Description**: Do not use variable names that clash with language keywords (e.g., class, print, break).
 - **Examples**:
   ```typescript
@@ -127,7 +130,7 @@
   let className = "Math";
   ```
 
-### [TS-NAMING-011] 
+### [TS-NAMING-011] Use PascalCase for Classes/Interfaces/Types/Enums
 - **Severity**: REQUIRED
 - **Description**: Class names, Interfaces, Types, and Enums must use PascalCase.
 - **Examples**:
@@ -139,6 +142,25 @@
   // Good
   class Person {}
   enum Color {}
+  ```
+
+### [TS-NAMING-012] No Magic Numbers
+- **Severity**: REQUIRED
+- **Description**: Don't use unexplained numbers in code. Use named constants instead.
+- **Examples**:
+  ```typescript
+    // Bad - Magic numbers
+  if (user.age > 18 && user.score > 100) {
+    // ...
+  }
+
+  // Good - Named constants
+  const MINIMUM_AGE = 18;
+  const MINIMUM_SCORE = 100;
+
+  if (user.age > MINIMUM_AGE && user.score > MINIMUM_SCORE) {
+    // ...
+  }
   ```
 
 ## 2. Styling
@@ -169,7 +191,7 @@
 
 ### [TS-STYLE-003] Indentation (2 Spaces)
 - **Severity**: REQUIRED
-- **Description**: Description: Use 2 spaces for indentation (configured via .editorconfig or Prettier).
+- **Description**: Use 2 spaces for indentation (configured via .editorconfig or Prettier).
 - **Examples**:
   ```typescript
   // Bad
@@ -227,26 +249,27 @@
 - **Examples**:
   ```typescript
   /**
-  * Adds two numbers together.
-  * @param {number} a - The first number to add.
-  * @param {number} b - The second number to add.
-  * @returns {number} - The sum of a and b.
-  */
+   * Adds two numbers together.
+   * @param {number} a - The first number to add.
+   * @param {number} b - The second number to add.
+   * @returns {number} - The sum of a and b.
+   */
   function add(a: number, b: number): number { ... }
   ```
+
 ### [TS-DOC-002] Comment Screen name or API url
 - **Severity**: REQUIRED
 - **Description**: Should comment Screen name or API url before doing something.
 - **Examples**:
   ```typescript
   /**
-  * S306_1 締め処理
-  */
+   * S306_1 締め処理
+   */
   <script lang=ts setup>...</script>
 
   /**
-  * api/customer
-  */
+   * api/customer
+   */
   export const search = async (req: Request, res: Response, next: NextFunction) => {...};
   ```
 
@@ -323,6 +346,22 @@
 
 ## 5. Security
 
+### [SEC-CRED-001] No Hard-coded Secrets
+- **Severity**: CRITICAL
+- **Description**: Never hard-code secrets, API keys, passwords, or JWT secrets in source code. Always use environment variables.
+- **Examples**:
+  ```typescript
+  // Bad
+  const jwtSecret = "your_super_secret_key";
+  const apiKey = "abc123xyz";
+
+  // Good
+  const jwtSecret = process.env.JWT_SECRET;
+  if (!jwtSecret) {
+    throw new Error('JWT_SECRET environment variable is required');
+  }
+  ```
+
 ### [SEC-DB-001] Parameterized Queries (SQL Injection)
 - **Severity**: CRITICAL
 - **Description**: NEVER concatenate strings into SQL queries. Use binding parameters/ORM methods.
@@ -375,3 +414,161 @@
   ```typescript
   const hash = await bcrypt.hash(password, salt);
   ```
+
+## 6. Clean Code Principles
+
+### [CLEAN-DRY] Don't Repeat Yourself (DRY)
+- **Severity**: CRITICAL
+- **Description**: Avoid code duplication. Extract repeated logic into reusable functions/modules.
+- **Examples**:
+  ```typescript
+  // Bad - Duplicated validation logic
+  if (user.age < 18) {
+    throw new Error('User must be 18 or older');
+  }
+  if (admin.age < 18) {
+    throw new Error('User must be 18 or older');
+  }
+
+  // Good - Reusable function
+  function validateAge(age: number): void {
+    if (age < 18) {
+      throw new Error('User must be 18 or older');
+    }
+  }
+  validateAge(user.age);
+  validateAge(admin.age);
+  ```
+
+### [CLEAN-KISS] Keep It Simple, Stupid (KISS)
+- **Severity**: REQUIRED
+- **Description**: Prefer simple, straightforward solutions over complex ones. Avoid over-engineering.
+- **Examples**:
+	```typescript
+	// Bad - Over-engineered
+  const result = array.reduce((acc, item) => [...acc, item.value], []);
+
+  // Good - Simple and clear
+  const result = array.map(item => item.value);
+	```
+
+### [CLEAN-YAGNI] You Aren't Gonna Need It (YAGNI)
+- **Severity**: RECOMMENDED
+- **Description**: Don't add functionality until it's actually needed. Avoid premature optimization.
+- **Examples**:
+	```typescript
+	// Bad - Adding unused features
+  class User {
+    constructor(
+      public name: string,
+      public email: string,
+      public address?: string,  // Not needed yet
+      public phoneNumbers?: string[],  // Not needed yet
+      public preferences?: object  // Not needed yet
+    ) {}
+  }
+
+  // Good - Only what's needed now
+  class User {
+    constructor(
+      public name: string,
+      public email: string
+    ) {}
+  }
+	```
+
+### [CLEAN-FUNC-001] Single Responsibility Principle (SRP)
+- **Severity**: REQUIRED
+- **Description**: Each function should do one thing and do it well. If a function does multiple things, split it.
+- **Examples**:
+	```typescript
+	// Bad - Function does too much
+  function processUser(user: User) {
+    validateUser(user);
+    saveToDatabase(user);
+    sendWelcomeEmail(user);
+    logActivity(user);
+  }
+
+  // Good - Split responsibilities
+  function validateAndSaveUser(user: User) {
+    validateUser(user);
+    saveToDatabase(user);
+  }
+
+  function notifyNewUser(user: User) {
+    sendWelcomeEmail(user);
+    logActivity(user);
+  }
+	```
+
+### [CLEAN-FUNC-002] Function Length Limit
+- **Severity**: REQUIRED
+- **Description**: Functions should be short (ideally < 20 lines). Long functions are hard to understand and test.
+- **Examples**:
+	```typescript
+	// Bad - Too long (50+ lines)
+  function processOrder(order: Order) {
+    // 50+ lines of code...
+  }
+
+  // Good - Break into smaller functions
+  function processOrder(order: Order) {
+    validateOrder(order);
+    calculateTotal(order);
+    applyDiscount(order);
+    finalizeOrder(order);
+  }
+	```
+
+### [CLEAN-FUNC-003] Function Parameters Limit
+- **Severity**: REQUIRED
+- **Description**: Functions should have 3 or fewer parameters. Use objects for multiple parameters.
+- **Examples**:
+	```typescript
+	 // Bad - Too many parameters
+  function createUser(name: string, email: string, age: number, address: string, phone: string) {
+    // ...
+  }
+
+  // Good - Use object parameter
+  interface CreateUserParams {
+    name: string;
+    email: string;
+    age: number;
+    address: string;
+    phone: string;
+  }
+
+  function createUser(params: CreateUserParams) {
+    // ...
+  }
+	```
+
+### [CLEAN-FUNC-004] Avoid Deep Nesting
+- **Severity**: RECOMMENDED
+- **Description**: Avoid nesting more than 3 levels. Use early returns or extract functions instead.
+- **Examples**:
+	```typescript
+	// Bad - Deep nesting
+  function processData(data: Data) {
+    if (data) {
+      if (data.isValid) {
+        if (data.items) {
+          if (data.items.length > 0) {
+            // Process items
+          }
+        }
+      }
+    }
+  }
+
+  // Good - Early returns
+  function processData(data: Data) {
+    if (!data) return;
+    if (!data.isValid) return;
+    if (!data.items || data.items.length === 0) return;
+    
+    // Process items
+  }
+	```
