@@ -1,5 +1,4 @@
 language: "vi-VN"
-tone_instructions: "Be concise and assertive. Get straight to the point. No pleasantries."
 early_access: false
 enable_free_tier: true
 
@@ -17,7 +16,7 @@ reviews:
   collapse_walkthrough: false
   changed_files_summary: true
   sequence_diagrams: false
-  estimate_code_review_effort: true
+  estimate_code_review_effort: false
   assess_linked_issues: false
   related_issues: false
   related_prs: true
@@ -45,6 +44,7 @@ reviews:
         4. CHỈ sử dụng Rule ID có sẵn: TS-NAMING-*, TS-STYLE-*, TS-DOC-*, TS-USAGE-*, TS-LINT-*, SEC-*
       
         Nếu không tìm thấy rule phù hợp → mô tả vấn đề KHÔNG dùng Rule ID format.
+        Hãy súc tích và quả quyết. Đi thẳng vào vấn đề. Không nói vòng vo.
   abort_on_close: true
   disable_cache: false
   auto_review:
