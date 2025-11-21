@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import UserController from '../controllers/user.controller.js';
+import { authenticateJWT } from '../middlewares/auth.middleware.js';
 
 class UserRoutes {
   public router: Router;
@@ -10,9 +11,9 @@ class UserRoutes {
   }
 
   private initializeRoutes(): void {
-    this.router.get('/', UserController.getAllUsers);
-    this.router.get('/:id', UserController.getUserById);
-    this.router.post('/', UserController.createUser);
+    this.router.get('/', authenticateJWT, UserController.getAllUsers);
+    this.router.get('/:id', authenticateJWT, UserController.getUserById);
+    this.router.post('/', UserController.createUser); // Keep public for registration
   }
 }
 
