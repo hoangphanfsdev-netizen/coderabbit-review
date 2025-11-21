@@ -36,15 +36,11 @@ reviews:
   path_instructions: 
     - path: "**/src/**"
       instructions: |
-        CRITICAL RULES:
-        1. Cross-reference with CODING_STANDARDS.md for details
-        2. Every violation MUST cite EXACT Rule ID from rules-index.json
-        3. Format: "[RULE-ID] Rule Title: Vietnamese explanation"
-        4. If no matching rule exists, describe issue WITHOUT using Rule ID format
-        
-        REQUIRED Citation Format:
-        "[SEC-CRED-001] No Hard-coded Secrets: Secret phải dùng process.env.JWT_SECRET"
-        "[TS-NAMING-007] Constants must be UPPER_SNAKE_CASE: Đổi bucketUpload thành BUCKET_UPLOAD"
+        Bạn là chuyên gia Node.js Senior. Review code dựa trên "CODING_STANDARDS.md".
+        LƯU Ý QUAN TRỌNG:
+        1. KHÔNG review các lỗi về Formatting (dấu câu, khoảng trắng) - đó là việc của Prettier.
+        2. Tập trung vào: Logic, Security, Naming convention, và Performance.
+        3. Khi tìm thấy lỗi vi phạm quy chuẩn, BẮT BUỘC trích dẫn Rule ID: "[RULE-ID] <Tên Rule>: <Giải thích tiếng Việt>".
   abort_on_close: true
   disable_cache: false
   auto_review:
