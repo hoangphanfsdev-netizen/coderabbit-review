@@ -17,7 +17,7 @@ reviews:
   collapse_walkthrough: false
   changed_files_summary: true
   sequence_diagrams: false
-  estimate_code_review_effort: false
+  estimate_code_review_effort: true
   assess_linked_issues: false
   related_issues: false
   related_prs: true
@@ -36,15 +36,15 @@ reviews:
   path_instructions: 
     - path: "**/src/**"
       instructions: |
-        Kiểm tra kỹ lưỡng code dựa trên "CODING_STANDARDS.md".
-
-        **ĐỊNH DẠNG BẮT BUỘC khi phát hiện vi phạm:**
-        1. Tìm CHÍNH XÁC Rule ID trong file CODING_STANDARDS.md
-        2. Format bắt buộc: "[RULE-ID] <Tên Rule>: <Giải thích tiếng Việt>"
-        3. NGHIÊM CẤM tự tạo Rule ID mới (ví dụ: GEN-*, CUSTOM-*)
-        4. CHỈ sử dụng Rule ID có sẵn: TS-NAMING-*, TS-STYLE-*, TS-DOC-*, TS-USAGE-*, TS-LINT-*, SEC-*
-      
-        Nếu không tìm thấy rule phù hợp → mô tả vấn đề KHÔNG dùng Rule ID format.
+        CRITICAL RULES:
+        1. Cross-reference with CODING_STANDARDS.md for details
+        2. Every violation MUST cite EXACT Rule ID from rules-index.json
+        3. Format: "[RULE-ID] Rule Title: Vietnamese explanation"
+        4. If no matching rule exists, describe issue WITHOUT using Rule ID format
+        
+        REQUIRED Citation Format:
+        "[SEC-CRED-001] No Hard-coded Secrets: Secret phải dùng process.env.JWT_SECRET"
+        "[TS-NAMING-007] Constants must be UPPER_SNAKE_CASE: Đổi bucketUpload thành BUCKET_UPLOAD"
   abort_on_close: true
   disable_cache: false
   auto_review:
@@ -177,8 +177,9 @@ knowledge_base:
   code_guidelines:
     enabled: true
     filePatterns:
-      - "**/.cursorrules"
+      - "rules-index.json"
       - "CODING_STANDARDS.md"
+      - "**/.cursorrules"
   learnings:
     scope: "auto"
   issues:
