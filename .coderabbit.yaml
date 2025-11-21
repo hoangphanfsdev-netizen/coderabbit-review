@@ -1,5 +1,5 @@
 language: "vi-VN"
-tone_instructions: "Be concise and focus on critical issues only. Avoid unnecessary pleasantries and get straight to the point. Follow the coding rules have been defined."
+tone_instructions: "Be concise and assertive. Get straight to the point. No pleasantries."
 early_access: false
 enable_free_tier: true
 
@@ -17,7 +17,7 @@ reviews:
   collapse_walkthrough: false
   changed_files_summary: true
   sequence_diagrams: false
-  estimate_code_review_effort: true
+  estimate_code_review_effort: false
   assess_linked_issues: false
   related_issues: false
   related_prs: true
@@ -36,9 +36,15 @@ reviews:
   path_instructions: 
     - path: "**/src/**"
       instructions: |
-        Kiểm tra kỹ lưỡng dựa trên "CODING_STANDARDS.md".
-        Khi tìm thấy lỗi vi phạm quy chuẩn, BẮT BUỘC phải trích dẫn Rule ID ở đầu câu trả lời.
-        Format: "[RULE-ID] <Tên Rule>: <Giải thích bằng tiếng Việt>""
+        Kiểm tra kỹ lưỡng code dựa trên "CODING_STANDARDS.md".
+
+        **ĐỊNH DẠNG BẮT BUỘC khi phát hiện vi phạm:**
+        1. Tìm CHÍNH XÁC Rule ID trong file CODING_STANDARDS.md
+        2. Format bắt buộc: "[RULE-ID] <Tên Rule>: <Giải thích tiếng Việt>"
+        3. NGHIÊM CẤM tự tạo Rule ID mới (ví dụ: GEN-*, CUSTOM-*)
+        4. CHỈ sử dụng Rule ID có sẵn: TS-NAMING-*, TS-STYLE-*, TS-DOC-*, TS-USAGE-*, TS-LINT-*, SEC-*
+      
+        Nếu không tìm thấy rule phù hợp → mô tả vấn đề KHÔNG dùng Rule ID format.
   abort_on_close: true
   disable_cache: false
   auto_review:
